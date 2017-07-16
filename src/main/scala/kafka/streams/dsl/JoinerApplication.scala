@@ -8,7 +8,6 @@ import org.apache.kafka.streams.{KafkaStreams, StreamsConfig}
 
 object JoinerApplication extends App {
 
-
   val streamsConfiguration = new Properties()
   streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "Streaming-QuickStart")
   streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
@@ -18,7 +17,8 @@ object JoinerApplication extends App {
   val stringSerde: Serde[String] = Serdes.String()
   val firstInTopic = "topic-1"
   val secondInTopic = "topic-2"
-  val outTopic = "topic-out"
+  val firstOutTopic = "topic-out-1"
+  val secondOutTopic = "topic-out-2"
   val builder = new KStreamBuilder
 
   /**
@@ -29,10 +29,9 @@ object JoinerApplication extends App {
 
   /**
     * Data receiving from topic-1
-    * sending to another topic with upper case characters
+    * sending to topic topic-out-1 with upper case characters
     * */
-  stream1.mapValues(_.toUpperCase).to(outTopic)
-
+  stream1.mapValues(_.toUpperCase).to(firstOutTopic)
 
   /**
     * Joining streams subscribed to two different topics
@@ -47,8 +46,8 @@ object JoinerApplication extends App {
     stringSerde
   )
 
-  /**now this joined stream is sending joined data to outTopic*/
-  joinedStream.to(outTopic)
+  /**now this joined stream is sending joined data to topic-out-2*/
+  joinedStream.to(secondOutTopic)
 
   /**creating object of kafkaStreams and starting streaming*/
   val stream: KafkaStreams = new KafkaStreams(builder, streamsConfiguration)
