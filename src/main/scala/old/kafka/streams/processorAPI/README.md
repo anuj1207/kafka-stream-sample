@@ -27,7 +27,7 @@ The GeneratorApp contains an akka scheduler and it is sending records on a const
 1. start zookeeper
 2. start kafka broker
 3. run GeneratorApp
-4. run Application
+4. run processorApplication
 5. to see the result you can create a consumer in terminal using the following command
 
 bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic out --from- beginning

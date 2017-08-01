@@ -1,9 +1,8 @@
-package kafka.streams.dsl
+package old.kafka.streams.processorAPI
 
 import java.util.Properties
 
 import akka.actor.ActorSystem
-import kafka.streams.Constants
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -19,12 +18,14 @@ object GeneratorApp extends App{
   val producer = new KafkaProducer[String, String](properties)
 
   var ctr = 1
+  var value = 0
   val system = ActorSystem("system")
   system.scheduler.schedule(0 second, 2 seconds){
-    val record1 = new ProducerRecord[String, String](Constants.firstInTopic, ctr.toString, "data from topic1 "+ctr)
-    val record2 = new ProducerRecord[String, String](Constants.secondInTopic, ctr.toString, "data from topic2 "+ctr)
+    if(ctr % 6 == 0 ) value = value - 1
+    else value = value + 1
+    val record1 = new ProducerRecord[String, String]("topic","key", value.toString)
+    println("sending ctr = " + ctr + "   " + value)
     ctr += 1
     producer.send(record1)
-    producer.send(record2)
   }
 }

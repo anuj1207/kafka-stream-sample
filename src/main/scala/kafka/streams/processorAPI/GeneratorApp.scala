@@ -3,6 +3,7 @@ package kafka.streams.processorAPI
 import java.util.Properties
 
 import akka.actor.ActorSystem
+import kafka.streams.Constants
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,7 +24,7 @@ object GeneratorApp extends App{
   system.scheduler.schedule(0 second, 2 seconds){
     if(ctr % 6 == 0 ) value = value - 1
     else value = value + 1
-    val record1 = new ProducerRecord[String, String]("topic","key", value.toString)
+    val record1 = new ProducerRecord[String, String](Constants.firstInTopic, "key", value.toString)
     println("sending ctr = " + ctr + "   " + value)
     ctr += 1
     producer.send(record1)
